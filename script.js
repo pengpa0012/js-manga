@@ -1,8 +1,10 @@
 
-
 const cardsCover = document.querySelector(".cards")
+const searchInput = document.querySelector(".search-input")
 
-fetch(API_URL, {
+
+// onMount
+fetch(`${API_URL}/manga/latest`, {
   headers: {
     'X-RapidAPI-Key': KEY,
     'X-RapidAPI-Host': HOST
@@ -10,8 +12,28 @@ fetch(API_URL, {
 })
 .then(res => res.json())
 .then(data => {
-  const mangas = data.data
+   generateCards(data.data)
+})
 
+searchInput.addEventListener("submit" , e => {
+  e.preventDefault()
+  const { manga } = Object.fromEntries(new FormData(e.target))
+  if(!manga) return
+  cardsCover.innerHTML = `<div class="text-3xl text-center my-12">Loading...</div>`
+  fetch(`${API_URL}/manga/search?text=${manga}`, {
+    headers: {
+      'X-RapidAPI-Key': KEY,
+      'X-RapidAPI-Host': HOST
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    cardsCover.innerHTML = ""
+   generateCards(data.data)
+  })
+})
+
+function generateCards(mangas) {
   mangas.forEach(el => {
     const newCard = document.createElement("div")
       newCard.className = "shadow-md rounded-md overflow-hidden w-[200px]"
@@ -25,6 +47,6 @@ fetch(API_URL, {
       `
     cardsCover.appendChild(newCard)
   });
-})
+}
 
 
