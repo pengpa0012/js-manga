@@ -1,18 +1,12 @@
+import {fetchData} from "./utility.js"
 
 const cardsCover = document.querySelector(".cards")
 const searchInput = document.querySelector(".search-input")
 
 
 // onMount
-fetch(`${API_URL}/manga/latest`, {
-  headers: {
-    'X-RapidAPI-Key': KEY,
-    'X-RapidAPI-Host': HOST
-  }
-})
-.then(res => res.json())
-.then(data => {
-   generateCards(data.data)
+fetchData("/manga/latest").then(data => {
+   generateCards(data)
 })
 
 searchInput.addEventListener("submit" , e => {
@@ -20,16 +14,9 @@ searchInput.addEventListener("submit" , e => {
   const { manga } = Object.fromEntries(new FormData(e.target))
   if(!manga) return
   cardsCover.innerHTML = `<div class="text-3xl text-center my-12">Loading...</div>`
-  fetch(`${API_URL}/manga/search?text=${manga}`, {
-    headers: {
-      'X-RapidAPI-Key': KEY,
-      'X-RapidAPI-Host': HOST
-    }
-  })
-  .then(res => res.json())
-  .then(data => {
+  fetchData("/manga/latest", `?text=${manga}`).then(data => {
     cardsCover.innerHTML = ""
-   generateCards(data.data)
+    generateCards(data)
   })
 })
 
