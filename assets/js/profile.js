@@ -29,8 +29,11 @@ fetchData("/manga", `?id=${id}`).then(data => {
 
 btnChapters.addEventListener("click", () => {
   // fetchChapters on button click
+  
+  chapterLists.innerHTML = `<div class="text-3xl text-center my-12">Loading...</div>`
   fetchData("/manga/chapter", `?id=${id}`).then(data => {
-    console.log(data)
+    btnChapters.classList.add("hidden")
+    chapterLists.innerHTML = ""
     data.forEach(el => {
       const newLi = document.createElement("li")
       newLi.className = "chapter"
